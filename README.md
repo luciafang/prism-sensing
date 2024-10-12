@@ -25,10 +25,10 @@ For now, we have
 - `src`: modularized pipeline
     - HAR (frame-level human activity recognition)
     - Tracker (postprocess with an extended Viterbi algorithm)
-    - Observer (coming soon, proactive intervention based on the tracking result)
+    - Observer (proactive intervention based on the tracking result)
     - Q&A (coming soon, question-answering interaction with LLMs augmented by sensing output)
 
-We will also release the real-time server app in the near future.
+We will also release the real-time server app shortly.
 
 # Setup
 

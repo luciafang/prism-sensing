@@ -1,8 +1,8 @@
 import pickle
 import numpy as np
 
-from .algorithm import ViterbiTracker, build_graph
-from .. import config
+from .algorithm import ViterbiTracker
+from .algorithm.utils import get_graph, get_raw_cm
 
 
 class TrackerAPI():
@@ -13,17 +13,8 @@ class TrackerAPI():
         * task_name (Str): task name (e.g., latte_making)
         * allow_exceptional_transition (bool): a flag whether to allow exceptional transitions.
         """
-        task_dir = config.datadrive / 'tasks' / task_name
-        preprocessed_files = [fp for fp in task_dir.glob('dataset/featurized/*.pkl') if 'inference-only' not in str(fp)]
-        with open(task_dir / 'dataset/steps.txt', 'r') as f:
-            steps = [s.strip() for s in f.readlines()]
-        graph = build_graph(preprocessed_files, steps)
-        print(f'Graph is built for {task_name} using {len(preprocessed_files)} files.')
-        print(graph)
-        cm_path = task_dir / 'models' / 'lopo' / 'cm_raw.pkl'
-        with open(cm_path, 'rb') as f:
-            cm = pickle.load(f)
-        print('Confusion matrix is loaded from ', cm_path)
+        graph = get_graph(task_name)
+        cm = get_raw_cm(task_name)
         self.tracker = ViterbiTracker(graph, confusion_matrix=cm, allow_exceptional_transition=allow_exceptional_transition)
 
     def __call__(self, probs):

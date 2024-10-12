@@ -6,9 +6,46 @@ from typing import List, Union, Dict
 import numpy as np
 
 from .collections import Graph, Step, History
+from ... import config
 
 
-def build_graph(pickle_files: List[Union[str, pathlib.Path]], steps: List[str]) -> Graph:
+def get_graph(task_name):
+    """
+    Get Graph object for a task.
+    Args:
+    * task_name (Str): task name (e.g., latte_making)
+
+    Returns:
+    * graph (Graph): a Graph object.
+    """
+    task_dir = config.datadrive / 'tasks' / task_name
+    preprocessed_files = [fp for fp in task_dir.glob('dataset/featurized/*.pkl') if 'inference-only' not in str(fp)]
+    with open(task_dir / 'dataset/steps.txt', 'r') as f:
+        steps = [s.strip() for s in f.readlines()]
+    graph = _build_graph(preprocessed_files, steps)
+    print(f'Graph is built for {task_name=} using {len(preprocessed_files)} files.')
+    print(graph)
+    return graph
+
+
+def get_raw_cm(task_name):
+    """
+    Get raw confusion matrix for a task.
+    Args:
+    * task_name (Str): task name (e.g., latte_making)
+
+    Returns:
+    * cm (List[List[float]]): a list of lists representing the confusion matrix of the task, obtaine through lopo evaluation.
+    """
+    task_dir = config.datadrive / 'tasks' / task_name
+    cm_path = task_dir / 'models' / 'lopo' / 'cm_raw.pkl'
+    with open(cm_path, 'rb') as f:
+        cm = pickle.load(f)
+    print('Confusion matrix is loaded from ', cm_path)
+    return cm
+
+
+def _build_graph(pickle_files: List[Union[str, pathlib.Path]], steps: List[str]) -> Graph:
     """
     This function builds a graph object from a set of pickle files and a list of steps.
     The graph represents transitions between the different steps in a procedure, with the time taken for each step.

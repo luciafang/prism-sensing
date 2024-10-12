@@ -1,4 +1,3 @@
-import copy
 import sys
 from typing import Dict, Iterable, Iterator, List, Optional, Tuple
 
@@ -20,7 +19,8 @@ class ViterbiTracker:
                  min_frames_per_step: int = 100):
         """
         Args:
-        * graph (Graph): a graph object built using build_graph(), which represents transitions between the different steps in a procedure.
+        * graph (Graph): a graph object, which represents transitions between the different steps in a procedure.
+        * confusion_matrix (List[List[float]]): a list of lists representing the confusion matrix of the observation probabilities.
         * allow_exceptional_transition (bool): a flag whether to allow exceptional transitions.
         * min_frames_per_step (int): the tracker considers at least 100 frames for each step.
         """
