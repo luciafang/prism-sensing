@@ -154,6 +154,7 @@ if __name__ == '__main__':
     task_dir = config.datadrive / 'tasks' / args.task
     feature_extractor = FeatureExtractor()
     to_be_featurized_pids = [f.stem for f in task_dir.glob('dataset/original/*') if f.is_dir()]
+    print(to_be_featurized_pids)
     if args.test_pids is not None:
         to_be_featurized_pids = [pid for pid in to_be_featurized_pids if pid in args.test_pids.split(',')]
     print('PIDs to be featurized:', to_be_featurized_pids)
